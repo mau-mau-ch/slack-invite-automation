@@ -27,26 +27,26 @@ router.post('/invite', function(req, res) {
         if (body.ok) {
           res.render('result', {
             community: config.community,
-            message: 'Success! Check "'+ req.body.email +'" for an invite from Slack.'
+            message: 'Erfolg! Check deine Mails!'
           });
         } else {
           var error = body.error;
           if (error === 'already_invited' || error === 'already_in_team') {
             res.render('result', {
               community: config.community,
-              message: 'Success! You were already invited.<br>' +
-                       'Visit to <a href="https://'+ config.slackUrl +'">'+ config.community +'</a>'
+              message: 'Du wurdest bereits eingeladen.<br>' +
+                       'Einloggen bei <a href="https://'+ config.slackUrl +'">'+ config.community +'</a>'
             });
             return;
           } else if (error === 'invalid_email') {
-            error = 'The email you entered is an invalid email.'
+            error = 'Die Email ist nicht gültig.'
           } else if (error === 'invalid_auth') {
-            error = 'Something has gone wrong. Please contact a system administrator.'
+            error = 'Etwas ist schief gelaufen.'
           }
 
           res.render('result', {
             community: config.community,
-            message: 'Failed! ' + error,
+            message: 'Fehler! ' + error,
             isFailed: true
           });
         }
@@ -54,22 +54,12 @@ router.post('/invite', function(req, res) {
   } else {
     var errMsg = [];
     if (!req.body.email) {
-      errMsg.push('your email is required');
-    }
-
-    if (!!config.inviteToken) {
-      if (!req.body.token) {
-        errMsg.push('valid token is required');
-      }
-
-      if (req.body.token && req.body.token !== config.inviteToken) {
-        errMsg.push('the token you entered is wrong');
-      }
+      errMsg.push('bitte gib eine Emailadresse ein');
     }
 
     res.render('result', {
       community: config.community,
-      message: 'Failed! ' + errMsg.join(' and ') + '.',
+      message: 'Fehler! ' + errMsg.join(' und ') + '.',
       isFailed: true
     });
   }
